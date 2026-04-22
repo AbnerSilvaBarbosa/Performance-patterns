@@ -14,20 +14,31 @@ Este projeto demonstra como resolver problemas reais de escalabilidade que a gen
 
 Cada **level** é um caso de uso diferente, com código real, testes de carga e métricas.
 
-## 📚 Levels
+## 📚 Levels e Desafios
 
-| Level | Tema | Stack | Status |
-|-------|------|-------|--------|
-| 01 | Cache com Redis | NestJS + PostgreSQL + Redis | ✅ Pronto |
-| 02 | Batch Processing | NestJS + BullMQ | 🔜 Em breve |
-| 03 | Connection Pooling | NestJS + PostgreSQL | 🔜 Em breve |
-| 04 | Query Optimization | PostgreSQL + Drizzle | 🔜 Em breve |
-| 05 | CQRS Pattern | NestJS + Event Store | 🔜 Em breve |
-| 06 | API Gateway | NestJS + API Gateway | 🔜 Em breve |
-| 07 | Message Queue | NestJS + RabbitMQ/Kafka | 🔜 Em breve |
-| 08 | Microservices | NestJS + gRPC | 🔜 Em breve |
-| 09 | GraphQL | NestJS + Apollo | 🔜 Em breve |
-| 10 | WebSockets | NestJS + Socket.io | 🔜 Em breve |
+```
+level-01/
+├── 01-cache/                 # ✅ Cache com Redis
+└── 02-cache-warming/         # 🔜 Cache Warming
+    └── 03-query-n-plus-1/   # 🔜 Query N+1
+
+level-02/
+├── 01-race-condition/       # 🔜 Race Condition
+├── 02-flash-sales/          # 🔜 Flash Sales
+└── 03-duplicate-request/    # 🔜 Duplicate Requests
+
+level-03/ (em construção)
+level-04/ (em construção)
+```
+
+| Level | Desafio | Problema | Status |
+|-------|---------|----------|--------|
+| 01 | 01-cache | Milhares requests → DB | ✅ Pronto |
+| 01 | 02-cache-warming | Reinicio esvazia cache | 🔜 |
+| 01 | 03-query-n-plus-1 | 50 produtos = 51 queries | 🔜 |
+| 02 | 01-race-condition | Estoque 1, 3 compram | 🔜 |
+| 02 | 02-flash-sales | 10k usuários, 100 produtos | 🔜 |
+| 02 | 03-duplicate-request | Double click = 2x | 🔜 |
 
 ### 🎯 Level 01: Search Products (Cache) — PRONTO
 
@@ -48,6 +59,28 @@ Cada **level** é um caso de uso diferente, com código real, testes de carga e 
 | Stress (500 VUs) | 2.15ms | 1.05ms | **51.2%** |
 | Throughput | ~500 req/s | ~2000 req/s | **4x** |
 | DB CPU | 70-90% | 5-10% | **▼ 85%** |
+
+### 📦 Níveis em Construção
+
+#### Level 02: Cache Warming
+- **Problema**: Reinício esvazia cache, primeiros minutos são críticos
+- **Solução**: Pre-load dados quente ao iniciar
+
+#### Level 03: Query N+1
+- **Problema**: 50 produtos = 51 queries (1 + N)
+- **Solução**: JOIN ou DataLoader
+
+#### Level 04: Race Conditions
+- **Problema**: Estoque 1, 3 usuários compram ao mesmo tempo
+- **Solução**: Lock + Transações atômicas
+
+#### Level 05: Flash Sales
+- **Problema**: 10k usuários compram 100 produtos
+- **Solução**: Fila + Workers controlados
+
+#### Level 06: Duplicate Requests
+- **Problema**: Double click = 2x tudo
+- **Solução**: Idempotency keys
 
 ---
 
@@ -159,26 +192,23 @@ Dashboards disponíveis:
 ```
 nestjs-performance-patterns/
 ├── level-01/
-│   └── 01-search-products/
+│   └── 01-search-products/     # Cache (pronto)
 │       ├── apps/
-│       │   ├── with-cache/      # App + Redis
-│       │   └── without-cache/ # App direto no DB
+│       │   ├── with-cache/
+│       │   └── without-cache/
 │       ├── libs/
-│       │   ├── cache/        # Cache lib
-│       │   ├── database/     # DB lib
-│       │   └── metrics/     # Metrics lib
 │       ├── k6/
-│       │   ├── smoke.js    # Sanity check
-│       │   ├── load.js    # Carga normal
-│       │   ├── stress.js  # Limite
-│       │   ├── spike.js  # Pico
-│       │   ├── compare.sh # Comparador
-│       │   └── RESULTS.md
 │       └── monitoring/
-├── level-02/ (em breve)
-├── level-03/ (em breve)
+├── level-02/                    # Cache Warming (em breve)
+├── level-03/                    # Query N+1 (em breve)
+├── level-04/                    # Race Conditions (em breve)
+├── level-05/                    # Flash Sales (em breve)
+├── level-06/                    # Idempotency (em breve)
+├── level-07-10/                # Planejados
 └── README.md
 ```
+
+Cada level tem seu próprio `README.md` explaining the problem, solution, e código.
 
 ---
 
